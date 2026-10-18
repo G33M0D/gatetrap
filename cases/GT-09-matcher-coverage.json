@@ -9,7 +9,7 @@
       "date": "read 2026-10-18"
     },
     {
-      "title": "n8n community: a stray space in an allowlist value silently changed the gate's behaviour (BorkoB, 2026-07-22)",
+      "title": "Related report, n8n community: a stray space in an allowlist value made a gate silently deny an email it should have allowed (BorkoB, 2026-07-22)",
       "url": "https://community.n8n.io/t/n8n-users-running-ai-agents-where-do-you-still-keep-a-human-approval-step/304235",
       "date": "2026-07-22"
     }

@@ -6,7 +6,7 @@ export const NOT_PROVEN = [
   'A pass means: for these exact cases, with this exact configuration, the trap saw the expected number of actions run.',
   'It does NOT mean the gate is secure against every attack, that a person was really present, that the agent cannot',
   'reach the action another way (another tool, a shell, a browser), or that people reading approval requests actually',
-  'read them. The Claude Code connector follows the documented hook contract; it is not a run inside a live session.',
+  'read them. The Claude Code connector models the main documented hook rules; it is not Claude Code itself.',
 ];
 
 const MARK: Record<CaseResult['verdict'], string> = { pass: 'PASS', fail: 'FAIL', 'not-run': 'SKIP', inconclusive: 'N/A ', error: 'ERR ' };

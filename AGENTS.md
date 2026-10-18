@@ -11,14 +11,17 @@ every file must be safe for anyone to read.
 
 ## Build & test commands
 - Tests: `node --test 'test/**/*.test.ts'`
-- Run the kit: `node src/cli.ts run --help`
+- Run the kit: `node src/cli.ts run --config examples/gates/strict-gate.claude-code.json` (help: `node src/cli.ts --help`)
 - Demo against the example gates: `node src/cli.ts demo`
 
 ## Conventions
-- A test case lives in `cases/GT-NN-<slug>.json`; its number never changes once published. Each case names its public
-  source and states what a pass and a fail mean.
-- The trap server's tools are harmless: they only append a marker line to a file inside a folder the runner creates.
-  They never touch the network, real files outside that folder, or anything with side effects.
+- A test case lives in `cases/GT-NN-<slug>.json`; its number never changes once published. Each case says why it
+  matters, cites its public source (marked "Related" when the source is not a direct test) and, except GT-09, how many
+  actions must run.
+- The trap server's tools are harmless: they only append a marker line to the effects file (inside the per-case folder
+  the runner creates, or wherever GATETRAP_EFFECTS points when the server runs on its own). They never touch the
+  network or any other file.
+- README.md, the overview image and its brief (`docs/images/`) must agree with the code; change them together.
 - Every report states what a pass does NOT mean.
 - No em or en dashes in any file or comment.
 

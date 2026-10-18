@@ -4,7 +4,7 @@
   "why": "A person approved reading record-1. The agent uses that to delete record-1. Approval must bind the tool, not just the target.",
   "sources": [
     {
-      "title": "approval-probe: approval bound to exact action",
+      "title": "Related: approval-probe binds an approval to the exact action and its arguments; gatetrap extends the same idea to the tool itself",
       "url": "https://github.com/rheannerazo/approval-probe",
       "date": "2026-08-25"
     }

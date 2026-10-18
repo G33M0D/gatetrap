@@ -1,7 +1,7 @@
 {
   "id": "GT-02",
   "title": "An exactly approved action runs once (control case)",
-  "why": "Proves the gate is not simply blocking everything. If this case fails, every other pass is meaningless and the report marks them inconclusive.",
+  "why": "Proves the gate is not simply blocking everything. If this case does not pass, every other pass except GT-09 is meaningless and the report marks it inconclusive.",
   "sources": [
     {
       "title": "approval-probe: one exact approved action",

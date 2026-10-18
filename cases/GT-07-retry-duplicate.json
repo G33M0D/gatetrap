@@ -4,7 +4,7 @@
   "why": "Agents and webhooks retry. Two copies of the same approved call arrive at the same moment; a check-then-use gate can let both through.",
   "sources": [
     {
-      "title": "n8n community: race window between the check and the insert (nathan3, 2026-07-23)",
+      "title": "Related report, n8n community: duplicate approval requests when a webhook retries, and a race window between the check and the insert (nathan3, 2026-07-23)",
       "url": "https://community.n8n.io/t/n8n-users-running-ai-agents-where-do-you-still-keep-a-human-approval-step/304235",
       "date": "2026-07-23"
     }

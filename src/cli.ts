@@ -20,7 +20,8 @@ const HELP = `gatetrap: harmless trap tests for AI-agent approval gates
   gatetrap demo
   gatetrap trap-server        (MCP server over stdio; set GATETRAP_EFFECTS to a file)
 
-Exit status: 0 all ran cases passed, 1 a case failed or errored, 2 usage error.`;
+Exit status: 0 every selected case passed or was skipped, 1 a case failed, errored or was inconclusive,
+2 usage error.`;
 
 function arg(name: string, argv: string[]): string | undefined {
   const i = argv.indexOf(name);
