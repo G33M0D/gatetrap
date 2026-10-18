@@ -7,3 +7,4 @@ _scratch/
 sources/
 previews/
 **/out/
+.claude/
