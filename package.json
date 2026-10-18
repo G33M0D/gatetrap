@@ -1,0 +1,12 @@
+{
+  "name": "gatetrap",
+  "version": "0.1.0",
+  "description": "Harmless trap tests for AI-agent approval gates: a trap MCP server, ten numbered failure cases and a Claude Code hook connector.",
+  "license": "Apache-2.0",
+  "type": "module",
+  "bin": { "gatetrap": "src/cli.ts" },
+  "engines": { "node": ">=24" },
+  "scripts": { "test": "node --test 'test/**/*.test.ts'", "demo": "node src/cli.ts demo" },
+  "repository": { "type": "git", "url": "https://github.com/G33M0D/gatetrap" },
+  "keywords": ["ai-agents", "approval-gates", "human-in-the-loop", "mcp", "claude-code", "hooks", "testing", "security"]
+}

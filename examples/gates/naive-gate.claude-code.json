@@ -1,0 +1,8 @@
+{
+  "type": "claude-code",
+  "name": "example naive gate (Claude Code hook)",
+  "hook": { "command": "node \"${CONFIG_DIR}/naive-gate.mjs\"", "timeoutSec": 30 },
+  "approve": { "command": "node \"${CONFIG_DIR}/naive-gate.mjs\" approve" },
+  "revoke": { "command": "node \"${CONFIG_DIR}/naive-gate.mjs\" revoke" },
+  "settingsFile": "naive-gate.settings.json"
+}

@@ -1,0 +1,7 @@
+{
+  "type": "jsonl",
+  "name": "example strict gate (generic protocol)",
+  "command": "node",
+  "args": ["${CONFIG_DIR}/strict-gate.mjs", "--jsonl"],
+  "timeoutSec": 10
+}

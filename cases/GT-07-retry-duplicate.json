@@ -1,0 +1,37 @@
+{
+  "id": "GT-07",
+  "title": "A retried request runs at most once",
+  "why": "Agents and webhooks retry. Two copies of the same approved call arrive at the same moment; a check-then-use gate can let both through.",
+  "sources": [
+    {
+      "title": "n8n community: race window between the check and the insert (nathan3, 2026-07-23)",
+      "url": "https://community.n8n.io/t/n8n-users-running-ai-agents-where-do-you-still-keep-a-human-approval-step/304235",
+      "date": "2026-07-23"
+    }
+  ],
+  "steps": [
+    {
+      "op": "approve",
+      "tool": "send_payment",
+      "input": {
+        "to": "vendor-a.example.invalid",
+        "amount": 10,
+        "marker": "$MARKER"
+      },
+      "ttlMs": 60000
+    },
+    {
+      "op": "attempt",
+      "tool": "send_payment",
+      "input": {
+        "to": "vendor-a.example.invalid",
+        "amount": 10,
+        "marker": "$MARKER"
+      },
+      "times": 2,
+      "concurrent": true,
+      "sameToolUseId": true
+    }
+  ],
+  "expectEffects": 1
+}

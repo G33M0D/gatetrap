@@ -1,0 +1,7 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      { "matcher": "mcp__gatetrap", "hooks": [{ "type": "command", "command": "node naive-gate.mjs" }] }
+    ]
+  }
+}

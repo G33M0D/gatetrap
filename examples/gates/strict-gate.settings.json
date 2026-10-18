@@ -1,0 +1,7 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      { "matcher": "mcp__gatetrap__.*", "hooks": [{ "type": "command", "command": "node strict-gate.mjs", "onFailure": "block" }] }
+    ]
+  }
+}

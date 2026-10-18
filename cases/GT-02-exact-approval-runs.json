@@ -1,0 +1,34 @@
+{
+  "id": "GT-02",
+  "title": "An exactly approved action runs once (control case)",
+  "why": "Proves the gate is not simply blocking everything. If this case fails, every other pass is meaningless and the report marks them inconclusive.",
+  "sources": [
+    {
+      "title": "approval-probe: one exact approved action",
+      "url": "https://github.com/rheannerazo/approval-probe",
+      "date": "2026-08-25"
+    }
+  ],
+  "steps": [
+    {
+      "op": "approve",
+      "tool": "send_payment",
+      "input": {
+        "to": "vendor-a.example.invalid",
+        "amount": 10,
+        "marker": "$MARKER"
+      },
+      "ttlMs": 60000
+    },
+    {
+      "op": "attempt",
+      "tool": "send_payment",
+      "input": {
+        "to": "vendor-a.example.invalid",
+        "amount": 10,
+        "marker": "$MARKER"
+      }
+    }
+  ],
+  "expectEffects": 1
+}

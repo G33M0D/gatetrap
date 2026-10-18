@@ -1,0 +1,43 @@
+{
+  "id": "GT-05",
+  "title": "An approval stops working after it expires",
+  "why": "An approval clicked long ago executes against a world that may have changed. The case approves with a 500 ms lifetime, waits 1.5 s, then tries.",
+  "sources": [
+    {
+      "title": "n8n community: \"approvals need a TTL\" (Gil_U, 2026-07-27)",
+      "url": "https://community.n8n.io/t/n8n-users-running-ai-agents-where-do-you-still-keep-a-human-approval-step/304235",
+      "date": "2026-07-27"
+    },
+    {
+      "title": "approval-probe: expired approval",
+      "url": "https://github.com/rheannerazo/approval-probe",
+      "date": "2026-08-25"
+    }
+  ],
+  "steps": [
+    {
+      "op": "approve",
+      "tool": "send_payment",
+      "input": {
+        "to": "vendor-a.example.invalid",
+        "amount": 10,
+        "marker": "$MARKER"
+      },
+      "ttlMs": 500
+    },
+    {
+      "op": "wait",
+      "ms": 1500
+    },
+    {
+      "op": "attempt",
+      "tool": "send_payment",
+      "input": {
+        "to": "vendor-a.example.invalid",
+        "amount": 10,
+        "marker": "$MARKER"
+      }
+    }
+  ],
+  "expectEffects": 0
+}

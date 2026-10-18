@@ -1,0 +1,9 @@
+node_modules/
+reports/
+.gatetrap-*/
+._*
+.DS_Store
+_scratch/
+sources/
+previews/
+**/out/

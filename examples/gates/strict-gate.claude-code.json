@@ -1,0 +1,8 @@
+{
+  "type": "claude-code",
+  "name": "example strict gate (Claude Code hook)",
+  "hook": { "command": "node \"${CONFIG_DIR}/strict-gate.mjs\"", "timeoutSec": 30, "onFailure": "block" },
+  "approve": { "command": "node \"${CONFIG_DIR}/strict-gate.mjs\" approve" },
+  "revoke": { "command": "node \"${CONFIG_DIR}/strict-gate.mjs\" revoke" },
+  "settingsFile": "strict-gate.settings.json"
+}
