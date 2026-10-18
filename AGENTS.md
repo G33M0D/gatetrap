@@ -10,7 +10,7 @@ every file must be safe for anyone to read.
 - Zero runtime and zero development dependencies. Tests use `node --test`.
 
 ## Build & test commands
-- Tests: `node --test 'test/**/*.test.ts'`
+- Tests: `node --test 'test/**/*.test.ts'` (27 tests, about 20 seconds)
 - Run the kit: `node src/cli.ts run --config examples/gates/strict-gate.claude-code.json` (help: `node src/cli.ts --help`)
 - Demo against the example gates: `node src/cli.ts demo`
 
@@ -18,9 +18,9 @@ every file must be safe for anyone to read.
 - A test case lives in `cases/GT-NN-<slug>.json`; its number never changes once published. Each case says why it
   matters, cites its public source (marked "Related" when the source is not a direct test) and, except GT-09, how many
   actions must run.
-- The trap server's tools are harmless: they only append a marker line to the effects file (inside the per-case folder
-  the runner creates, or wherever GATETRAP_EFFECTS points when the server runs on its own). They never touch the
-  network or any other file.
+- The trap server's tools are harmless: they only append a marker line to the effects file (in a separate per-case trap
+  folder the runner creates and does not give the gate, or wherever GATETRAP_EFFECTS points when the server runs on its
+  own). They never touch the network or any other file.
 - README.md, the overview image and its brief (`docs/images/`) must agree with the code; change them together.
 - Every report states what a pass does NOT mean.
 - No em or en dashes in any file or comment.

@@ -3,10 +3,14 @@
 //
 //   request:  {"protocol":"gatetrap/v1","op":"approve"|"revoke"|"attempt","tool":"delete_record",
 //              "input":{...},"ttlMs":60000,"toolUseId":"..."}
-//   response: {"decision":"allow"|"deny"|"ask"|"error","reason":"..."}   (approve and revoke answer {"ok":true})
+//   response: {"decision":"allow"|"deny"|"ask","reason":"..."}   (approve and revoke answer {"ok":true})
 //
-// The gate never runs the action itself: on "allow", gatetrap calls the trap tool. An "error", a crash or no answer
-// within the timeout is reported as fail-open only if the config says the platform runs actions on gate failure.
+// The gate never runs the action itself: on "allow", gatetrap calls the trap tool. A crash, an unknown decision or no
+// answer within the timeout is a gate failure. By default a failure lets the action run (fail-open), the worst case
+// for an unknown platform; set onFailure "block" when the platform around the gate blocks on failure.
+//
+// Replies are matched to requests in order. A request that timed out keeps its place, so its late reply is read and
+// discarded instead of being taken as the answer to the next request.
 
 import { spawn } from 'node:child_process';
 import type { ChildProcessWithoutNullStreams } from 'node:child_process';
@@ -19,23 +23,30 @@ export type JsonlConfig = {
   command: string;
   args?: string[];
   timeoutSec?: number;
-  /** What the platform around the gate does when the gate fails: "run" (fail-open) or "block" (the default). */
+  /** What the platform around the gate does when the gate fails: "run" (fail-open, the default) or "block". */
   onFailure?: 'run' | 'block';
 };
 
+type Waiter = { deliver: (line: string | null) => void };
+
 export class JsonlGate implements Gate {
+  readonly kind = 'jsonl' as const;
   private child: ChildProcessWithoutNullStreams;
   private config: JsonlConfig;
-  private queue: ((line: string | null) => void)[] = [];
+  private queue: Waiter[] = [];
   private dead = false;
 
   constructor(config: JsonlConfig, caseDir: string) {
     this.config = config;
     this.child = spawn(config.command, config.args ?? [], { cwd: caseDir, env: { ...process.env, GATETRAP_CASE_DIR: caseDir }, stdio: ['pipe', 'pipe', 'pipe'] });
-    createInterface({ input: this.child.stdout }).on('line', (l) => this.queue.shift()?.(l));
+    createInterface({ input: this.child.stdout }).on('line', (l) => this.queue.shift()?.deliver(l));
     this.child.on('exit', () => {
       this.dead = true;
-      for (const w of this.queue.splice(0)) w(null);
+      for (const w of this.queue.splice(0)) w.deliver(null);
+    });
+    this.child.on('error', () => {
+      this.dead = true;
+      for (const w of this.queue.splice(0)) w.deliver(null);
     });
     this.child.stdin.on('error', () => {});
   }
@@ -43,15 +54,24 @@ export class JsonlGate implements Gate {
   private send(msg: Record<string, unknown>): Promise<Record<string, unknown> | null> {
     if (this.dead) return Promise.resolve(null);
     return new Promise((resolve) => {
-      const timer = setTimeout(() => resolve(null), (this.config.timeoutSec ?? 30) * 1000);
-      this.queue.push((line) => {
-        clearTimeout(timer);
-        if (line === null) return resolve(null);
-        try {
-          resolve(JSON.parse(line) as Record<string, unknown>);
-        } catch {
-          resolve(null);
-        }
+      let answered = false;
+      const timer = setTimeout(() => {
+        answered = true; // the waiter stays queued, so a late reply is consumed here and not by the next request
+        resolve(null);
+      }, (this.config.timeoutSec ?? 30) * 1000);
+      this.queue.push({
+        deliver: (line) => {
+          clearTimeout(timer);
+          if (answered) return;
+          answered = true;
+          if (line === null) return resolve(null);
+          try {
+            const v = JSON.parse(line) as unknown;
+            resolve(typeof v === 'object' && v !== null && !Array.isArray(v) ? (v as Record<string, unknown>) : null);
+          } catch {
+            resolve(null);
+          }
+        },
       });
       this.child.stdin.write(`${JSON.stringify({ protocol: 'gatetrap/v1', ...msg })}\n`);
     });
@@ -62,14 +82,15 @@ export class JsonlGate implements Gate {
     if (!r?.ok) throw new Error(`gate did not accept the approval: ${JSON.stringify(r)}`);
   }
 
-  async revoke(tool: string, input: Record<string, unknown>): Promise<void> {
-    await this.send({ op: 'revoke', tool, input });
+  async revoke(tool: string, input: Record<string, unknown>): Promise<boolean> {
+    const r = await this.send({ op: 'revoke', tool, input });
+    return r !== null;
   }
 
   async attempt(tool: string, input: Record<string, unknown>, toolUseId: string): Promise<Attempt> {
     const r = await this.send({ op: 'attempt', tool, input, toolUseId });
     const failed = (why: string): Attempt =>
-      this.config.onFailure === 'run' ? { outcome: 'fail-open', note: `${why}; the platform runs actions when the gate fails`, runInput: input } : { outcome: 'block', note: why };
+      this.config.onFailure === 'block' ? { outcome: 'block', note: `${why}; blocked because onFailure is "block"` } : { outcome: 'fail-open', note: `${why}; the platform runs the action when the gate fails`, runInput: input };
     if (!r) return failed('no valid answer from the gate');
     const reason = String(r.reason ?? '').slice(0, 160);
     switch (r.decision) {

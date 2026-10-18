@@ -55,7 +55,9 @@ and reports which ones got through. Maintained by Gee; a case study and a checkl
 - [x] Licence: Apache-2.0 (same as approval-probe, includes a patent grant), chosen 2026-10-18.
 - [ ] When to test against real gates (n8n Human Review, Strands, Aegis, phantasm).
 - [x] A real run inside Claude Code: done once per path on 2026-10-18 (docs/live-check-2026-10-18.md); not automated.
-- [ ] Known gaps found by the 2026-10-18 code read, not yet fixed: a dishonest gate can alter the count (the marker file
-      sits in its working folder, and updatedInput can drop the marker); some Claude Code edge cases are scored
-      differently from the real client (listed in the README); the generic connector's default onFailure is block; a
-      timed-out generic request can shift later replies; package.json points bin at a .ts file and is not marked private.
+- [x] Gaps found by the 2026-10-18 code read, fixed the same day (CHANGELOG "Fixed"): the marker file now lives outside
+      the gate's folder and every line counts; the Claude Code connector follows the documented rule table; hooks run
+      only where the settings matchers fire; timeouts stop the whole hook; the generic connector defaults to fail-open
+      and discards late replies; usage errors exit 2; package.json is private.
+- [x] Tampering with the trap's marker file or the trap server is detected (counted calls checked against the file)
+      and reported as an error; tested 2026-10-18.

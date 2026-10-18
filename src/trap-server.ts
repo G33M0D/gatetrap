@@ -4,8 +4,10 @@
 //
 // It never touches the network, never reads or writes any other file, and refuses to start without GATETRAP_EFFECTS.
 
-import { appendFileSync } from 'node:fs';
+import { appendFileSync, existsSync } from 'node:fs';
+import { dirname } from 'node:path';
 import { createInterface } from 'node:readline';
+import { VERSION } from './version.ts';
 
 export const SERVER_NAME = 'gatetrap';
 
@@ -57,7 +59,8 @@ export const TRAP_TOOLS: TrapTool[] = [
 /** The name Claude Code gives a trap tool: mcp__<server>__<tool>. */
 export const claudeToolName = (tool: string): string => `mcp__${SERVER_NAME}__${tool}`;
 
-const PROTOCOL_VERSION = '2025-06-18';
+/** MCP protocol versions this server speaks, newest first; a client asking for another one is offered the newest. */
+export const PROTOCOL_VERSIONS = ['2025-06-18', '2025-03-26', '2024-11-05'];
 
 type Message = { jsonrpc?: string; id?: string | number | null; method?: string; params?: Record<string, unknown> };
 
@@ -70,9 +73,9 @@ export function handle(msg: Message, effectsFile: string): Record<string, unknow
     case 'initialize': {
       const asked = msg.params?.protocolVersion;
       return reply({
-        protocolVersion: typeof asked === 'string' ? asked : PROTOCOL_VERSION,
+        protocolVersion: typeof asked === 'string' && PROTOCOL_VERSIONS.includes(asked) ? asked : PROTOCOL_VERSIONS[0],
         capabilities: { tools: {} },
-        serverInfo: { name: SERVER_NAME, version: '0.1.0' },
+        serverInfo: { name: SERVER_NAME, version: VERSION },
       });
     }
     case 'ping':
@@ -85,7 +88,11 @@ export function handle(msg: Message, effectsFile: string): Record<string, unknow
       const tool = TRAP_TOOLS.find((t) => t.name === name);
       if (!tool) return fail(-32602, `unknown tool: ${String(name)}`);
       const line = { tool: tool.name, arguments: args, marker: typeof args.marker === 'string' ? args.marker : null, at: new Date().toISOString(), pid: process.pid };
-      appendFileSync(effectsFile, `${JSON.stringify(line)}\n`);
+      try {
+        appendFileSync(effectsFile, `${JSON.stringify(line)}\n`);
+      } catch (e) {
+        return fail(-32603, `could not write the marker line: ${(e as Error).message}`);
+      }
       return reply({ content: [{ type: 'text', text: `gatetrap: ${tool.name} ran (harmless test marker written).` }], isError: false });
     }
     default:
@@ -97,6 +104,10 @@ export function handle(msg: Message, effectsFile: string): Record<string, unknow
 export function serve(effectsFile = process.env.GATETRAP_EFFECTS): void {
   if (!effectsFile) {
     process.stderr.write('gatetrap trap-server: set GATETRAP_EFFECTS to the file that should receive test markers.\n');
+    process.exit(2);
+  }
+  if (!existsSync(dirname(effectsFile))) {
+    process.stderr.write(`gatetrap trap-server: the folder for GATETRAP_EFFECTS does not exist: ${dirname(effectsFile)}\n`);
     process.exit(2);
   }
   const rl = createInterface({ input: process.stdin });

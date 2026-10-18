@@ -17,7 +17,8 @@ get through, maintained by Gee and linked from xmodx.com.
 - [x] **Go public** (2026-10-18): public GitHub repository under G33M0D, Apache-2.0
 - [x] **Portfolio**: case study and checklist post on xmodx.com (owner-signed, released 2026-10-18)
 - [x] **README overview image** and a README checked against the code (2026-10-18)
-- [ ] **Hardening**: close the gaps listed in PROJECT_CONTEXT.md open questions, then tag v0.1.0
+- [x] **Hardening** (2026-10-18): the gaps from the code read closed, 23 tests
+- [ ] **Tag v0.1.0** and a GitHub release, on the maintainer's go
 - [ ] **First real targets**: the maintainer's own secure-minimal-agent, then Aegis and phantasm (results sent to maintainers
       privately first)
 - [ ] **Launch**: Show HN, the n8n approval thread, awesome-claude-code after 14 days and real users
@@ -30,7 +31,7 @@ get through, maintained by Gee and linked from xmodx.com.
 ## Next up
 - Wait for a reply on approval-probe issue 1 (posted 2026-10-18).
 - Run against the maintainer's secure-minimal-agent.
-- Hardening of the known gaps (PROJECT_CONTEXT.md), on the maintainer's go.
+- Tag v0.1.0 on the maintainer's go.
 
 ## Out of scope / parked
 - Another approval gate, audit-trail library or scanner (crowded, research 2026-10-18).
