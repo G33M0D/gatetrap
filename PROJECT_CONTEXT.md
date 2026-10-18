@@ -44,7 +44,8 @@ and reports which ones got through. Maintained by Gee; related write-ups on xmod
 - xmodx.com, the maintainer's portfolio: a checklist page and a case study will link here.
 
 ## Open questions / unknowns (TODO)
-- [ ] Whether the approval-probe author wants to share a case format (note not sent yet).
+- [ ] Whether the approval-probe author wants to share a case format: asked 2026-10-18 in
+      https://github.com/rheannerazo/approval-probe/issues/1, no reply yet.
 - [x] Licence: Apache-2.0 (same as approval-probe, includes a patent grant), chosen 2026-10-18.
 - [ ] Whether to test against real gates (n8n Human Review, Strands, Aegis, phantasm) in v0.1 or later.
 - [ ] Real end-to-end run inside an actual Claude Code session (needs a model call; the v0.1 connector reproduces the

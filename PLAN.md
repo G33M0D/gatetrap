@@ -26,7 +26,7 @@ get through, maintained by Gee and linked from xmodx.com.
 - Survey of existing projects and scope (2026-10-18).
 
 ## Next up
-- Note to approval-probe's author proposing a shared case format.
+- Wait for a reply on approval-probe issue 1 (posted 2026-10-18).
 - Run against the maintainer's secure-minimal-agent and write the xmodx.com checklist page.
 
 ## Out of scope / parked
